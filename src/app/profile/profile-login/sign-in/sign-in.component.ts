@@ -1,10 +1,10 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { UserCredential } from '@angular/fire/auth';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, switchMap, tap } from 'rxjs';
 
 import { SignFormComponent } from '../sign-form/sign-form.component';
+import { AppUser } from '../../../core/models/app-user.model';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -65,7 +65,7 @@ export default class SignInComponent {
 
   private router = inject(Router);
 
-  private handleSignInResponse(response: UserCredential | undefined): void {
+  private handleSignInResponse(response: AppUser | undefined): void {
     if (!response) {
       return;
     }

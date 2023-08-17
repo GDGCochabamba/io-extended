@@ -21,7 +21,6 @@ import { LoadingState } from '../../../core/states/loading.state';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressBarModule,
     NgIf,
     ReactiveFormsModule,
     RouterLink,
@@ -61,10 +60,6 @@ import { LoadingState } from '../../../core/states/loading.state';
           </div>
         </form>
       </mat-card-content>
-
-      <mat-card-footer *ngIf="loading()">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </mat-card-footer>
     </mat-card>
   `,
   styles: [

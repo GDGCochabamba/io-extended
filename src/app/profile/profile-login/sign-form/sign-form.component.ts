@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { LoadingState } from '../../../core/states/loading.state';
 
@@ -17,8 +16,6 @@ import { LoadingState } from '../../../core/states/loading.state';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressBarModule,
-    NgIf,
     ReactiveFormsModule,
   ],
   template: `
@@ -68,10 +65,6 @@ import { LoadingState } from '../../../core/states/loading.state';
           </button>
         </div>
       </mat-card-content>
-
-      <mat-card-footer *ngIf="loading()">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </mat-card-footer>
     </mat-card>
   `,
   styles: [
