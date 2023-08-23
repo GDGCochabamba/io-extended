@@ -48,10 +48,12 @@ import { CurrentUserState } from '../../core/states/current-user.state';
         </div>
       </mat-card-content>
 
-      <mat-card-actions>
+      <mat-card-actions class="buttons">
         <button mat-button (click)="signOutSubject$.next()">
           Cerrar Sesión
         </button>
+
+        <button mat-raised-button (click)="listFriends()"> Ver amigos </button>
       </mat-card-actions>
     </mat-card>
   `,
@@ -64,6 +66,12 @@ import { CurrentUserState } from '../../core/states/current-user.state';
       .profile-details__qrcode-container {
         text-align: center;
         width: 100%;
+      }
+
+      .buttons {
+        gap: 1rem;
+        justify-content: space-around;
+        margin-bottom: 0.5rem;
       }
     `,
   ],
@@ -80,4 +88,8 @@ export default class ProfileDetailsComponent {
     switchMap(() => this.auth.signOut()),
     tap({ next: () => this.router.navigate(['/profile/login']) }),
   );
+
+  listFriends() {
+    this.router.navigate(['/profile/friends']);
+  }
 }
