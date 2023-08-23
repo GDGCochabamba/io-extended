@@ -10,17 +10,12 @@ import { AvatarImagePipe } from './avatar-image.pipe';
 import { AuthService } from '../../core/services/auth.service';
 import { CurrentUserState } from '../../core/states/current-user.state';
 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ProfileFriendsComponent } from '../profile-friends/profile-friends.component';
+
 @Component({
   selector: 'io-profile-details',
   standalone: true,
-  imports: [
-    AsyncPipe,
-    AvatarImagePipe,
-    MatCardModule,
-    MatButtonModule,
-    NgIf,
-    QRCodeModule,
-  ],
   template: `
     <ng-container *ngIf="signOut$ | async"></ng-container>
 
@@ -52,10 +47,9 @@ import { CurrentUserState } from '../../core/states/current-user.state';
         <button mat-button (click)="signOutSubject$.next()">
           Cerrar Sesión
         </button>
-
-        <button mat-raised-button (click)="listFriends()"> Ver amigos </button>
       </mat-card-actions>
     </mat-card>
+    <io-profile-friends></io-profile-friends>
   `,
   styles: [
     `
@@ -69,11 +63,20 @@ import { CurrentUserState } from '../../core/states/current-user.state';
       }
 
       .buttons {
-        gap: 1rem;
-        justify-content: space-around;
+        justify-content: center;
         margin-bottom: 0.5rem;
       }
     `,
+  ],
+  imports: [
+    AsyncPipe,
+    AvatarImagePipe,
+    MatCardModule,
+    MatButtonModule,
+    NgIf,
+    QRCodeModule,
+    MatExpansionModule,
+    ProfileFriendsComponent,
   ],
 })
 export default class ProfileDetailsComponent {
@@ -88,8 +91,4 @@ export default class ProfileDetailsComponent {
     switchMap(() => this.auth.signOut()),
     tap({ next: () => this.router.navigate(['/profile/login']) }),
   );
-
-  listFriends() {
-    this.router.navigate(['/profile/friends']);
-  }
 }

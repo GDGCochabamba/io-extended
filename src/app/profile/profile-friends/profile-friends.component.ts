@@ -1,35 +1,57 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { CurrentUserState } from 'src/app/core/states/current-user.state';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { mockUser } from './mockUser';
 
 @Component({
   selector: 'io-profile-friends',
   standalone: true,
-  imports: [CommonModule, MatExpansionModule],
   template: `
     <h1>Amigos</h1>
-    <mat-accordion class="headers-align">
-      <mat-expansion-panel
-        (opened)="panelOpenState = true"
-        (closed)="panelOpenState = false"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title class="title">
-            {{ user()?.displayName }}
-          </mat-panel-title>
+    <ng-container *ngFor="let item of us.friends">
+      <mat-accordion class="headers-align">
+        <mat-expansion-panel
+          (opened)="panelOpenState = true"
+          (closed)="panelOpenState = false"
+          class="box"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title class="title">
+              {{ item.displayName }}
+            </mat-panel-title>
 
-          <mat-panel-description>
-            <img class="imagen" [src]="user()?.photoURL" alt="Foto" />
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+            <mat-panel-description>
+              <ng-container *ngIf="item.photoURL; else noPhoto">
+                <img class="imagen" [src]="item.photoURL" alt="Foto" />
+              </ng-container>
 
-        <p>{{ user()?.email }}</p>
-      </mat-expansion-panel>
-    </mat-accordion>
+              <ng-template #noPhoto>
+                <mat-icon>account_circle</mat-icon>
+              </ng-template>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>{{ item.email }}</p>
+
+          <ng-container *ngFor="let redes of item.redesSociales">
+            <p>{{ redes }}</p>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
   `,
   styles: [
     `
+      .box {
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        margin-top: 2rem;
+        margin-left: 0.5rem;
+      }
+
       .title {
         display: flex;
         flex-grow: 15;
@@ -45,8 +67,10 @@ import { CurrentUserState } from 'src/app/core/states/current-user.state';
       }
     `,
   ],
+  imports: [CommonModule, MatExpansionModule, MatIconModule],
 })
-export default class ProfileFriendsComponent {
+export class ProfileFriendsComponent {
   user = inject(CurrentUserState).currentUser;
+  us = mockUser;
   panelOpenState = false;
 }

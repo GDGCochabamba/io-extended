@@ -27,12 +27,6 @@ export const profileRoutes: Routes = [
           ),
         canActivate: [loginGuard],
       },
-      {
-        path: 'friends',
-        loadComponent: () =>
-          import('./profile-friends/profile-friends.component'),
-        canActivate: [authGuard],
-      },
     ],
   },
 ];
