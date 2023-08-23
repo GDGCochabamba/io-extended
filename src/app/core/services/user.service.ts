@@ -1,7 +1,14 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { User } from '@angular/fire/auth';
-import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import {
+  doc,
+  docData,
+  Firestore,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from '@angular/fire/firestore';
+import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
 
 import { LoggerService } from './logger.service';
 import { handleError } from '../functions/handle-error.function';
@@ -27,13 +34,35 @@ export class UserService {
     );
   }
 
+  async getUserData(email: string): Promise<AppUser | undefined> {
+    const docRef = doc(this.db, 'users', email);
+    const docData = await getDoc(docRef);
+    return docData.data() as AppUser | undefined;
+  }
+
+  async addFriends(user: AppUser, friendUser: AppUser): Promise<void> {
+    const friends = user?.friends || [];
+    const newFriends = [...new Set([...friends, friendUser.email!])];
+    const points = user?.score || 0;
+    const newPoints = points + 20;
+
+    const docRef = doc(this.db, 'users', user.email!);
+    await updateDoc(docRef, { friends: newFriends, score: newPoints });
+  }
+
   createUser({
     email,
     displayName,
     photoURL,
   }: User): Observable<AppUser | undefined> {
     const docRef = doc(this.db, 'users', email || '');
-    const appUser: AppUser = { email, displayName, photoURL };
+    const appUser: AppUser = {
+      email,
+      displayName,
+      photoURL,
+      friends: [],
+      score: 0,
+    };
 
     return this.getUser(email || '').pipe(
       tap(this.loadEffectObserver),
