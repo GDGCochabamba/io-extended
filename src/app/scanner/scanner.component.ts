@@ -1,8 +1,9 @@
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { of, Subject, switchMap } from 'rxjs';
 
 import { AppUser } from '../core/models/app-user.model';
 import { CurrentUserState } from '../core/states/current-user.state';
@@ -11,8 +12,15 @@ import { UserService } from '../core/services/user.service';
 @Component({
   selector: 'io-scanner',
   standalone: true,
-  imports: [MatButtonModule, MatDialogModule, ZXingScannerModule, NgIf],
+  imports: [
+    AsyncPipe,
+    MatButtonModule,
+    MatDialogModule,
+    ZXingScannerModule,
+    NgIf,
+  ],
   template: `
+    <ng-container *ngIf="friend$ | async as friend" />
     <h1 mat-dialog-title> Conecta </h1>
 
     <div mat-dialog-content>
@@ -61,40 +69,47 @@ import { UserService } from '../core/services/user.service';
 })
 export class ScannerComponent {
   private userService = inject(UserService);
-  private userState = inject(CurrentUserState);
+  private currentUser = inject(CurrentUserState).currentUser;
   private dialogRef = inject(MatDialogRef<ScannerComponent>);
   errorMessage: string | null = null;
 
+  subject$ = new Subject<string>();
+  friend$ = this.subject$.pipe(
+    switchMap((friendEmail) => this.userService.getUserData(friendEmail)),
+    switchMap((friend) => {
+      const currentUser = this.currentUser();
+      if (currentUser && friend && this.validateFriend(friend)) {
+        return this.userService
+          .addFriends(currentUser, friend)
+          .pipe(
+            switchMap(() => this.userService.addFriends(friend, currentUser)),
+          );
+      }
+      return of(friend);
+    }),
+  );
+
   async processCode(friendEmail: string): Promise<void> {
-    const user: AppUser | undefined = this.userState.currentUser();
-    const userEmail = user?.email;
-    if (!userEmail || userEmail === friendEmail) {
-      this.errorMessage = 'No se puede agregar a sí mismo como amigo';
-      return;
-    }
+    this.subject$.next(friendEmail);
+  }
 
-    const userDoc: AppUser | undefined =
-      await this.userService.getUserData(friendEmail);
-    if (!userDoc) {
+  validateFriend(friend: AppUser): boolean {
+    if (!friend) {
       this.errorMessage = 'El usuario no existe';
-      return;
+      return false;
     }
 
-    const isFriend: boolean | undefined = userDoc.friends?.includes(userEmail);
-    if (isFriend) {
+    if (this.currentUser()?.email === friend.email) {
+      this.errorMessage = 'No se puede agregar a sí mismo como amigo';
+      return false;
+    }
+
+    if (friend.friends?.includes(this.currentUser()?.email!)) {
       this.errorMessage = 'Ya es amigo';
-      return;
+      return false;
     }
 
-    const friendsDoc: AppUser | undefined =
-      await this.userService.getUserData(friendEmail);
-    if (friendsDoc && userEmail) {
-      await this.userService.addFriends(user, friendsDoc);
-      await this.userService.addFriends(friendsDoc, user);
-    }
-
-    this.errorMessage = null;
-    return;
+    return true;
   }
 
   closeScanner(): void {
