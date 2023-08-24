@@ -7,6 +7,7 @@ export const loadEffect = () => {
 
   return {
     subscribe: () => loadingState.startLoading(),
+    tap: () => loadingState.stopLoading(),
     finalize: () => loadingState.stopLoading(),
   };
 };

@@ -40,14 +40,19 @@ export class UserService {
     return docData.data() as AppUser | undefined;
   }
 
-  async addFriends(user: AppUser, friendUser: AppUser): Promise<void> {
+  addFriends(user: AppUser, friendUser: AppUser): Observable<void> {
     const friends = user?.friends || [];
     const newFriends = [...new Set([...friends, friendUser.email!])];
     const points = user?.score || 0;
     const newPoints = points + 20;
 
     const docRef = doc(this.db, 'users', user.email!);
-    await updateDoc(docRef, { friends: newFriends, score: newPoints });
+    return from(
+      updateDoc(docRef, { friends: newFriends, score: newPoints }),
+    ).pipe(
+      tap(this.loadEffectObserver),
+      catchError((error) => handleError(error, this.logger)),
+    );
   }
 
   createUser({
