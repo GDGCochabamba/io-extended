@@ -73,7 +73,10 @@ export class ProfileFriendsComponent {
   private userService = inject(UserService);
 
   user = inject(CurrentUserState).currentUser;
-  friends = this.user.friends?.map((email) => this.userService.getUser(email));
+  // this.user.friends
+  friends = ['esther.romeagui@gmail.com'].map((email) =>
+    this.userService.getUser(email),
+  );
 
   panelOpenState = false;
 }
