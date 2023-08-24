@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { CurrentUserState } from 'src/app/core/states/current-user.state';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { mockUser } from './mockUser';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'io-profile-friends',
   standalone: true,
   template: `
     <h1>Amigos</h1>
-    <ng-container *ngFor="let item of us.friends">
+    <ng-container *ngFor="let item$ of friends">
       <mat-accordion class="headers-align">
         <mat-expansion-panel
           (opened)="panelOpenState = true"
@@ -19,12 +19,16 @@ import { mockUser } from './mockUser';
         >
           <mat-expansion-panel-header>
             <mat-panel-title class="title">
-              {{ item.displayName }}
+              {{ (item$ | async)?.displayName }}
             </mat-panel-title>
 
             <mat-panel-description>
-              <ng-container *ngIf="item.photoURL; else noPhoto">
-                <img class="imagen" [src]="item.photoURL" alt="Foto" />
+              <ng-container *ngIf="(item$ | async)?.photoURL; else noPhoto">
+                <img
+                  class="imagen"
+                  [src]="(item$ | async)?.photoURL"
+                  alt="Foto"
+                />
               </ng-container>
 
               <ng-template #noPhoto>
@@ -32,11 +36,7 @@ import { mockUser } from './mockUser';
               </ng-template>
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <p>{{ item.email }}</p>
-
-          <ng-container *ngFor="let redes of item.redesSociales">
-            <p>{{ redes }}</p>
-          </ng-container>
+          <p>{{ (item$ | async)?.email }}</p>
         </mat-expansion-panel>
       </mat-accordion>
     </ng-container>
@@ -67,10 +67,13 @@ import { mockUser } from './mockUser';
       }
     `,
   ],
-  imports: [CommonModule, MatExpansionModule, MatIconModule],
+  imports: [CommonModule, MatExpansionModule, MatIconModule, NgFor, NgIf],
 })
 export class ProfileFriendsComponent {
+  private userService = inject(UserService);
+
   user = inject(CurrentUserState).currentUser;
-  us = mockUser;
+  friends = this.user.friends?.map((email) => this.userService.getUser(email));
+
   panelOpenState = false;
 }
