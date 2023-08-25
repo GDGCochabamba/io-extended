@@ -20,7 +20,7 @@ import { UserService } from '../core/services/user.service';
     NgIf,
   ],
   template: `
-    <ng-container *ngIf="friend$ | async as friend" />
+    <ng-container *ngIf="friend$ | async" />
     <h1 mat-dialog-title> Conecta </h1>
 
     <div mat-dialog-content>
@@ -73,8 +73,8 @@ export class ScannerComponent {
   private dialogRef = inject(MatDialogRef<ScannerComponent>);
   errorMessage: string | null = null;
 
-  subject$ = new Subject<string>();
-  friend$ = this.subject$.pipe(
+  friendSubject$ = new Subject<string>();
+  friend$ = this.friendSubject$.pipe(
     switchMap((friendEmail) => this.userService.getUserData(friendEmail)),
     switchMap((friend) => {
       const currentUser = this.currentUser();
@@ -90,7 +90,7 @@ export class ScannerComponent {
   );
 
   async processCode(friendEmail: string): Promise<void> {
-    this.subject$.next(friendEmail);
+    this.friendSubject$.next(friendEmail);
   }
 
   validateFriend(friend: AppUser): boolean {
