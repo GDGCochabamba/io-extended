@@ -1,31 +1,33 @@
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { CurrentUserState } from 'src/app/core/states/current-user.state';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+
+import { CurrentUserState } from 'src/app/core/states/current-user.state';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'io-profile-friends',
   standalone: true,
+  imports: [AsyncPipe, MatExpansionModule, MatIconModule, NgFor, NgIf],
   template: `
-    <h1>Amigos</h1>
+    <h1 class="profile-friends__title">Amigos</h1>
     <ng-container *ngFor="let item$ of friends">
-      <mat-accordion class="headers-align">
+      <mat-accordion>
         <mat-expansion-panel
           (opened)="panelOpenState = true"
           (closed)="panelOpenState = false"
-          class="box"
+          class="profile-friends__panel"
         >
           <mat-expansion-panel-header>
-            <mat-panel-title class="title">
+            <mat-panel-title class="profile-friends__name">
               {{ (item$ | async)?.displayName }}
             </mat-panel-title>
 
             <mat-panel-description>
               <ng-container *ngIf="(item$ | async)?.photoURL; else noPhoto">
                 <img
-                  class="imagen"
+                  class="profile-friends__avatar"
                   [src]="(item$ | async)?.photoURL"
                   alt="Foto"
                 />
@@ -43,16 +45,16 @@ import { UserService } from 'src/app/core/services/user.service';
   `,
   styles: [
     `
-      .box {
-        margin-bottom: 12px;
-      }
-
-      h1 {
+      .profile-friends__title {
         margin-top: 2rem;
         margin-left: 0.5rem;
       }
 
-      .title {
+      .profile-friends__panel {
+        margin-bottom: 12px;
+      }
+
+      .profile-friends__name {
         display: flex;
         flex-grow: 15;
         flex-basis: 0;
@@ -60,14 +62,13 @@ import { UserService } from 'src/app/core/services/user.service';
         align-items: center;
       }
 
-      .imagen {
+      .profile-friends__avatar {
         border-radius: 50%;
         width: 35px;
         height: 35px;
       }
     `,
   ],
-  imports: [CommonModule, MatExpansionModule, MatIconModule, NgFor, NgIf],
 })
 export class ProfileFriendsComponent {
   private userService = inject(UserService);
