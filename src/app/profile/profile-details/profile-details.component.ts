@@ -10,17 +10,12 @@ import { AvatarImagePipe } from './avatar-image.pipe';
 import { AuthService } from '../../core/services/auth.service';
 import { CurrentUserState } from '../../core/states/current-user.state';
 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ProfileFriendsComponent } from '../profile-friends/profile-friends.component';
+
 @Component({
   selector: 'io-profile-details',
   standalone: true,
-  imports: [
-    AsyncPipe,
-    AvatarImagePipe,
-    MatCardModule,
-    MatButtonModule,
-    NgIf,
-    QRCodeModule,
-  ],
   template: `
     <ng-container *ngIf="signOut$ | async"></ng-container>
 
@@ -48,12 +43,13 @@ import { CurrentUserState } from '../../core/states/current-user.state';
         </div>
       </mat-card-content>
 
-      <mat-card-actions>
+      <mat-card-actions class="buttons">
         <button mat-button (click)="signOutSubject$.next()">
           Cerrar Sesión
         </button>
       </mat-card-actions>
     </mat-card>
+    <io-profile-friends></io-profile-friends>
   `,
   styles: [
     `
@@ -65,7 +61,22 @@ import { CurrentUserState } from '../../core/states/current-user.state';
         text-align: center;
         width: 100%;
       }
+
+      .buttons {
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
     `,
+  ],
+  imports: [
+    AsyncPipe,
+    AvatarImagePipe,
+    MatCardModule,
+    MatButtonModule,
+    NgIf,
+    QRCodeModule,
+    MatExpansionModule,
+    ProfileFriendsComponent,
   ],
 })
 export default class ProfileDetailsComponent {
