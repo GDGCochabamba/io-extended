@@ -3,9 +3,9 @@ import {
   Auth,
   GoogleAuthProvider,
   User,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
   signInWithPopup,
   user,
 } from '@angular/fire/auth';
@@ -39,9 +39,45 @@ export class AuthService {
 
   private logger = inject(LoggerService);
 
-  signIn(email: string, password: string): Observable<AppUser | undefined> {
-    return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
+  sendSignInEmail(email: string): Observable<void | undefined> {
+    const actionCodeSettings = {
+      url: 'http://localhost:4200/profile/login/confirm-email',
+      handleCodeInApp: true,
+    };
+
+    return from(
+      sendSignInLinkToEmail(this.auth, email, actionCodeSettings),
+    ).pipe(
       tap(this.loadEffectObserver),
+      tap({
+        next: () => {
+          localStorage.setItem('emailForSignIn', email);
+          this.logger.handleSuccess(
+            'Revisa la bandeja de entrada de tu correo.',
+          );
+        },
+      }),
+      catchError((error) => handleError(error, this.logger)),
+    );
+  }
+
+  signInWithEmailLink(): Observable<AppUser | undefined> {
+    console.log(this.auth);
+    console.log(location.href);
+    if (!isSignInWithEmailLink(this.auth, location.href)) {
+      console.log('fail');
+      return of(undefined);
+    }
+
+    let email = localStorage.getItem('emailForSignIn');
+
+    if (!email) {
+      email = prompt('Please provide your email for confirmation');
+    }
+
+    return from(signInWithEmailLink(this.auth, email!, location.href)).pipe(
+      tap(this.loadEffectObserver),
+      tap({ next: () => localStorage.removeItem('emailForSignIn') }),
       switchMap(({ user }) => this.userService.createUser(user)),
       tap((user) => this.userState.setUser(user)),
       catchError((error) => handleError(error, this.logger)),
@@ -57,36 +93,10 @@ export class AuthService {
     );
   }
 
-  signUp(email: string, password: string): Observable<AppUser | undefined> {
-    return from(
-      createUserWithEmailAndPassword(this.auth, email, password),
-    ).pipe(
-      tap(this.loadEffectObserver),
-      switchMap(({ user }) => this.userService.createUser(user)),
-      tap({
-        next: () => this.logger.handleSuccess('Usuario creado exitosamente.'),
-      }),
-      catchError((error) => handleError(error, this.logger)),
-    );
-  }
-
   signOut(): Observable<void | undefined> {
     return from(this.auth.signOut()).pipe(
       tap(this.loadEffectObserver),
       tap(() => this.userState.cleanUser()),
-      catchError((error) => handleError(error, this.logger)),
-    );
-  }
-
-  sendPasswordResetEmail(email: string): Observable<void | undefined> {
-    return from(sendPasswordResetEmail(this.auth, email)).pipe(
-      tap(this.loadEffectObserver),
-      tap({
-        next: () =>
-          this.logger.handleSuccess(
-            'Correo electrónico de restablecimiento de contraseña enviado.',
-          ),
-      }),
       catchError((error) => handleError(error, this.logger)),
     );
   }

@@ -4,11 +4,19 @@ import {
   doc,
   docData,
   Firestore,
-  getDoc,
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { catchError, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 
 import { LoggerService } from './logger.service';
 import { handleError } from '../functions/handle-error.function';
@@ -29,15 +37,10 @@ export class UserService {
     const docRef = doc(this.db, 'users', email);
 
     return (docData(docRef) as Observable<AppUser>).pipe(
+      take(1),
       tap(this.loadEffectObserver),
       catchError((error) => handleError(error, this.logger)),
     );
-  }
-
-  async getUserData(email: string): Promise<AppUser | undefined> {
-    const docRef = doc(this.db, 'users', email);
-    const docData = await getDoc(docRef);
-    return docData.data() as AppUser | undefined;
   }
 
   addFriends(user: AppUser, friendUser: AppUser): Observable<void> {
@@ -45,8 +48,8 @@ export class UserService {
     const newFriends = [...new Set([...friends, friendUser.email!])];
     const points = user?.score || 0;
     const newPoints = points + 20;
-
     const docRef = doc(this.db, 'users', user.email!);
+
     return from(
       updateDoc(docRef, { friends: newFriends, score: newPoints }),
     ).pipe(
@@ -89,6 +92,7 @@ export class UserService {
 
   editUser(email: string, userData: any): Observable<void> {
     const docRef = doc(this.db, 'users', email);
+
     return from(updateDoc(docRef, userData)).pipe(
       tap(this.loadEffectObserver),
       catchError((error) => handleError(error, this.logger)),

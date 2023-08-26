@@ -15,13 +15,8 @@ export const profileLoginRoutes: Routes = [
         loadComponent: () => import('./sign-in/sign-in.component'),
       },
       {
-        path: 'sign-up',
-        loadComponent: () => import('./sign-up/sign-up.component'),
-      },
-      {
-        path: 'reset-password',
-        loadComponent: () =>
-          import('./reset-password/reset-password.component'),
+        path: 'confirm-email',
+        loadComponent: () => import('./confirm-email/confirm-email.component'),
       },
     ],
   },

@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Output, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,13 +31,6 @@ import { LoadingState } from '../../../core/states/loading.state';
             <input matInput formControlName="email" />
           </mat-form-field>
 
-          <ng-content select="[passwordAction]"></ng-content>
-
-          <mat-form-field>
-            <mat-label> Contraseña </mat-label>
-            <input matInput formControlName="password" type="password" />
-          </mat-form-field>
-
           <button
             mat-raised-button
             color="primary"
@@ -50,8 +42,6 @@ import { LoadingState } from '../../../core/states/loading.state';
         </form>
 
         <div class="sign-form__extra">
-          <ng-content select="[additionalAction]"></ng-content>
-
           <div class="sign-form__or-container">
             <span> O </span>
           </div>
@@ -75,12 +65,8 @@ import { LoadingState } from '../../../core/states/loading.state';
         flex-direction: column;
       }
 
-      .sign-form__extra {
-        padding-bottom: 22px;
-      }
-
       .sign-form__or-container {
-        margin-bottom: 22px;
+        margin: 22px 0;
         text-align: center;
 
         span {
@@ -105,15 +91,11 @@ export class SignFormComponent {
 
   signForm = inject(FormBuilder).group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   @Output() signInWithGoogle = new EventEmitter<void>();
 
-  @Output() private submitForm = new EventEmitter<{
-    email: string;
-    password: string;
-  }>();
+  @Output() private submitForm = new EventEmitter<string>();
 
   constructor() {
     effect(() => {
@@ -130,10 +112,10 @@ export class SignFormComponent {
       return;
     }
 
-    const { email, password } = this.signForm.value;
+    const { email } = this.signForm.value;
 
-    if (email && password) {
-      this.submitForm.emit({ email, password });
+    if (email) {
+      this.submitForm.emit(email);
     }
   }
 }

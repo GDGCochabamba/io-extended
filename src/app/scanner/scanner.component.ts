@@ -75,7 +75,7 @@ export class ScannerComponent {
 
   subject$ = new Subject<string>();
   friend$ = this.subject$.pipe(
-    switchMap((friendEmail) => this.userService.getUserData(friendEmail)),
+    switchMap((friendEmail) => this.userService.getUser(friendEmail)),
     switchMap((friend) => {
       const currentUser = this.currentUser();
       if (currentUser && friend && this.validateFriend(friend)) {

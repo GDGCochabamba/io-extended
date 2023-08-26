@@ -1,20 +1,19 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { QRCodeModule } from 'angularx-qrcode';
 import { Subject, switchMap, tap } from 'rxjs';
-import { HttpClientModule } from '@angular/common/http';
 
 import { AvatarImagePipe } from './avatar-image.pipe';
+import { ProfileFriendsComponent } from '../profile-friends/profile-friends.component';
 import { AuthService } from '../../core/services/auth.service';
 import { CurrentUserState } from '../../core/states/current-user.state';
-
-import { MatExpansionModule } from '@angular/material/expansion';
-import { ProfileFriendsComponent } from '../profile-friends/profile-friends.component';
 
 @Component({
   selector: 'io-profile-details',
@@ -150,6 +149,7 @@ import { ProfileFriendsComponent } from '../profile-friends/profile-friends.comp
         </button>
       </mat-card-actions>
     </mat-card>
+
     <io-profile-friends></io-profile-friends>
   `,
   styles: [
@@ -190,11 +190,6 @@ import { ProfileFriendsComponent } from '../profile-friends/profile-friends.comp
       .profile-details__qrcode-container {
         text-align: center;
         width: 100%;
-      }
-
-      .buttons {
-        justify-content: center;
-        margin-bottom: 0.5rem;
       }
 
       .profile-details__social-medial-title {
@@ -250,9 +245,10 @@ export default class ProfileDetailsComponent {
   private auth = inject(AuthService);
 
   private router = inject(Router);
-  constructor(private matIconRegistry: MatIconRegistry) {
+
+  constructor(matIconRegistry: MatIconRegistry) {
     // Add social media svg icons
-    this.matIconRegistry.addSvgIcon(
+    matIconRegistry.addSvgIcon(
       'twitter',
       'assets/social-media-icons/twitter.svg',
     );

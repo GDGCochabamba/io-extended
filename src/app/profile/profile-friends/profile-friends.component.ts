@@ -1,49 +1,54 @@
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { CurrentUserState } from 'src/app/core/states/current-user.state';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { UserService } from 'src/app/core/services/user.service';
+
+import { UserService } from '../../core/services/user.service';
+import { CurrentUserState } from '../../core/states/current-user.state';
 
 @Component({
   selector: 'io-profile-friends',
   standalone: true,
+  imports: [AsyncPipe, MatExpansionModule, MatIconModule, NgFor, NgIf],
   template: `
     <h1>Amigos</h1>
     <ng-container *ngFor="let item$ of friends">
-      <mat-accordion class="headers-align">
-        <mat-expansion-panel
-          (opened)="panelOpenState = true"
-          (closed)="panelOpenState = false"
-          class="box"
-        >
-          <mat-expansion-panel-header>
-            <mat-panel-title class="title">
-              {{ (item$ | async)?.displayName }}
-            </mat-panel-title>
+      <ng-container *ngIf="item$ | async as item">
+        <mat-accordion class="headers-align">
+          <mat-expansion-panel
+            (opened)="panelOpenState = true"
+            (closed)="panelOpenState = false"
+            class="profile-friends__box"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title class="profile-friends__title">
+                {{ item.displayName }}
+              </mat-panel-title>
 
-            <mat-panel-description>
-              <ng-container *ngIf="(item$ | async)?.photoURL; else noPhoto">
-                <img
-                  class="imagen"
-                  [src]="(item$ | async)?.photoURL"
-                  alt="Foto"
-                />
-              </ng-container>
+              <mat-panel-description>
+                <ng-container *ngIf="item.photoURL; else noPhoto">
+                  <img
+                    class="profile-friends__picture"
+                    alt="Foto de perfil"
+                    [src]="item.photoURL"
+                  />
+                </ng-container>
 
-              <ng-template #noPhoto>
-                <mat-icon>account_circle</mat-icon>
-              </ng-template>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <p>{{ (item$ | async)?.email }}</p>
-        </mat-expansion-panel>
-      </mat-accordion>
+                <ng-template #noPhoto>
+                  <mat-icon>account_circle</mat-icon>
+                </ng-template>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <p>{{ item.email }}</p>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </ng-container>
     </ng-container>
   `,
   styles: [
     `
-      .box {
+      .profile-friends__box {
         margin-bottom: 12px;
       }
 
@@ -52,7 +57,7 @@ import { UserService } from 'src/app/core/services/user.service';
         margin-left: 0.5rem;
       }
 
-      .title {
+      .profile-friends__title {
         display: flex;
         flex-grow: 15;
         flex-basis: 0;
@@ -60,19 +65,19 @@ import { UserService } from 'src/app/core/services/user.service';
         align-items: center;
       }
 
-      .imagen {
+      .profile-friends__picture {
         border-radius: 50%;
         width: 35px;
         height: 35px;
       }
     `,
   ],
-  imports: [CommonModule, MatExpansionModule, MatIconModule, NgFor, NgIf],
 })
 export class ProfileFriendsComponent {
   private userService = inject(UserService);
 
   user = inject(CurrentUserState).currentUser;
+
   friends = this.user()?.friends?.map((email) =>
     this.userService.getUser(email),
   );

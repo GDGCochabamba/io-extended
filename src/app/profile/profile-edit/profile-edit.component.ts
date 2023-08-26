@@ -12,9 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Subject, switchMap, tap } from 'rxjs';
 
 import { AvatarImagePipe } from '../profile-details/avatar-image.pipe';
-import { LoadingState } from '../../core/states/loading.state';
-
 import { UserService } from '../../core/services/user.service';
+import { LoadingState } from '../../core/states/loading.state';
 @Component({
   selector: 'io-profile-edit',
   standalone: true,
@@ -33,6 +32,7 @@ import { UserService } from '../../core/services/user.service';
   ],
   template: `
     <ng-container *ngIf="editProfile$ | async"></ng-container>
+
     <mat-card class="profile-edit-container">
       <div
         class="profile-edit__avatar"
@@ -58,7 +58,7 @@ import { UserService } from '../../core/services/user.service';
 
           <h3 class="profile-edit__social-media-title">Redes Sociales</h3>
           <p class="profile-edit__social-media-description"
-            >Agrega tus redes para fortalecer tus lazos y conocer más amigos</p
+            >Agrega tus redes para fortalecer tus lazos y conocer más amigos.</p
           >
           <mat-form-field>
             <mat-label> Facebook </mat-label>

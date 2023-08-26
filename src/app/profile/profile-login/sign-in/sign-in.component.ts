@@ -12,27 +12,16 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [AsyncPipe, NgIf, RouterLink, SignFormComponent],
   template: `
-    <ng-container *ngIf="signIn$ | async"></ng-container>
+    <ng-container *ngIf="sendSignInEmail$ | async"></ng-container>
     <ng-container *ngIf="signInWithGoogle$ | async"></ng-container>
 
     <io-sign-form
-      (submitForm)="signInSubject$.next($event)"
+      (submitForm)="sendSignInEmailSubject$.next($event)"
       (signInWithGoogle)="signInWithGoogleSubject$.next()"
     >
-      <a
-        passwordAction
-        class="sign-in__reset-link"
-        routerLink="../reset-password"
-      >
-        ¿Olvidaste tu contraseña?
-      </a>
-
-      <div additionalAction class="sign-in__sign-up-container">
-        ¿No tienes cuenta?
-        <a routerLink="../sign-up"> Regístrate </a>
-      </div>
-
-      <ng-container submitLabel> Iniciar Sesión </ng-container>
+      <ng-container submitLabel>
+        Mandar Enlace de Inicio de Sesión
+      </ng-container>
     </io-sign-form>
   `,
   styles: [
@@ -51,10 +40,9 @@ import { AuthService } from '../../../core/services/auth.service';
 export default class SignInComponent {
   private auth = inject(AuthService);
 
-  signInSubject$ = new Subject<{ email: string; password: string }>();
-  signIn$ = this.signInSubject$.pipe(
-    switchMap(({ email, password }) => this.auth.signIn(email, password)),
-    tap({ next: (response) => this.handleSignInResponse(response) }),
+  sendSignInEmailSubject$ = new Subject<string>();
+  sendSignInEmail$ = this.sendSignInEmailSubject$.pipe(
+    switchMap((email) => this.auth.sendSignInEmail(email)),
   );
 
   signInWithGoogleSubject$ = new Subject<void>();
@@ -66,6 +54,7 @@ export default class SignInComponent {
   private router = inject(Router);
 
   private handleSignInResponse(response: AppUser | undefined): void {
+    console.log('handling sign in', response);
     if (!response) {
       return;
     }
