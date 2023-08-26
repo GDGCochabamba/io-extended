@@ -67,6 +67,11 @@ export class UserService {
       photoURL,
       friends: [],
       score: 0,
+      facebookUsername: '',
+      instagramUsername: '',
+      twitterUsername: '',
+      githubUsername: '',
+      linkedinUsername: '',
     };
 
     return this.getUser(email || '').pipe(
@@ -78,6 +83,14 @@ export class UserService {
 
         return from(setDoc(docRef, appUser)).pipe(map(() => appUser));
       }),
+      catchError((error) => handleError(error, this.logger)),
+    );
+  }
+
+  editUser(email: string, userData: any): Observable<void> {
+    const docRef = doc(this.db, 'users', email);
+    return from(updateDoc(docRef, userData)).pipe(
+      tap(this.loadEffectObserver),
       catchError((error) => handleError(error, this.logger)),
     );
   }
