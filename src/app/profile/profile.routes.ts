@@ -20,6 +20,11 @@ export const profileRoutes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'edit',
+        loadComponent: () => import('./profile-edit/profile-edit.component'),
+        canActivate: [authGuard],
+      },
+      {
         path: 'login',
         loadChildren: () =>
           import('./profile-login/profile-login.routes').then(

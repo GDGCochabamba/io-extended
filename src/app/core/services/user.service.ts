@@ -40,14 +40,19 @@ export class UserService {
     return docData.data() as AppUser | undefined;
   }
 
-  async addFriends(user: AppUser, friendUser: AppUser): Promise<void> {
+  addFriends(user: AppUser, friendUser: AppUser): Observable<void> {
     const friends = user?.friends || [];
     const newFriends = [...new Set([...friends, friendUser.email!])];
     const points = user?.score || 0;
     const newPoints = points + 20;
 
     const docRef = doc(this.db, 'users', user.email!);
-    await updateDoc(docRef, { friends: newFriends, score: newPoints });
+    return from(
+      updateDoc(docRef, { friends: newFriends, score: newPoints }),
+    ).pipe(
+      tap(this.loadEffectObserver),
+      catchError((error) => handleError(error, this.logger)),
+    );
   }
 
   createUser({
@@ -62,6 +67,11 @@ export class UserService {
       photoURL,
       friends: [],
       score: 0,
+      facebookUsername: '',
+      instagramUsername: '',
+      twitterUsername: '',
+      githubUsername: '',
+      linkedinUsername: '',
     };
 
     return this.getUser(email || '').pipe(
@@ -73,6 +83,14 @@ export class UserService {
 
         return from(setDoc(docRef, appUser)).pipe(map(() => appUser));
       }),
+      catchError((error) => handleError(error, this.logger)),
+    );
+  }
+
+  editUser(email: string, userData: any): Observable<void> {
+    const docRef = doc(this.db, 'users', email);
+    return from(updateDoc(docRef, userData)).pipe(
+      tap(this.loadEffectObserver),
       catchError((error) => handleError(error, this.logger)),
     );
   }
