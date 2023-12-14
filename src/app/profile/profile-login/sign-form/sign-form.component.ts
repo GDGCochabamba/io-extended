@@ -22,8 +22,9 @@ import { LoadingState } from '../../../core/states/loading.state';
     <mat-card>
       <img
         mat-card-image
-        src="assets/img/io-banner.jpg"
-        alt="Banner del I/O extended"
+        src="assets/img/devfest.png"
+        alt="Banner del DevFest"
+        class="banner-image"
       />
       <mat-card-content>
         <form class="sign-form" [formGroup]="signForm" (ngSubmit)="submit()">
@@ -96,6 +97,10 @@ import { LoadingState } from '../../../core/states/loading.state';
           transform: translateY(-0.3rem);
           width: calc(50% - 1rem);
         }
+      }
+
+      .banner-image {
+        margin-bottom: 20px;
       }
     `,
   ],

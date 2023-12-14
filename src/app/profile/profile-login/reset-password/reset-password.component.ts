@@ -31,8 +31,9 @@ import { LoadingState } from '../../../core/states/loading.state';
     <mat-card>
       <img
         mat-card-image
-        src="assets/img/io-banner.jpg"
-        alt="Banner del I/O extended"
+        src="assets/img/devfest.png"
+        alt="Banner del DevFest"
+        class="banner-image"
       />
 
       <mat-card-content>
@@ -72,6 +73,10 @@ import { LoadingState } from '../../../core/states/loading.state';
       .reset-password__sign-in-container {
         margin: 22px 0;
         text-align: center;
+      }
+
+      .banner-image {
+        margin-bottom: 20px;
       }
     `,
   ],
