@@ -2,8 +2,9 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { of, Subject, switchMap } from 'rxjs';
+import { finalize, of, Subject, switchMap } from 'rxjs';
 
 import { AppUser } from '../core/models/app-user.model';
 import { CurrentUserState } from '../core/states/current-user.state';
@@ -35,7 +36,6 @@ import { UserService } from '../core/services/user.service';
         ></zxing-scanner>
       </div>
     </div>
-    <span class="error-message" *ngIf="errorMessage">{{ errorMessage }}</span>
 
     <div mat-dialog-actions>
       <button mat-button (click)="closeScanner()"> Cerrar </button>
@@ -71,48 +71,65 @@ export class ScannerComponent {
   private userService = inject(UserService);
   private currentUser = inject(CurrentUserState).currentUser;
   private dialogRef = inject(MatDialogRef<ScannerComponent>);
-  errorMessage: string | null = null;
+  private snackBar = inject(MatSnackBar);
+  statusMessage: string | null = null;
 
   subject$ = new Subject<string>();
   friend$ = this.subject$.pipe(
-    switchMap((friendEmail) => this.userService.getUserData(friendEmail)),
+    switchMap((code) => this.userService.getUserData(code)),
     switchMap((friend) => {
       const currentUser = this.currentUser();
       if (currentUser && friend && this.validateFriend(friend)) {
-        return this.userService
-          .addFriends(currentUser, friend)
-          .pipe(
-            switchMap(() => this.userService.addFriends(friend, currentUser)),
-          );
+        return this.userService.addFriends(currentUser, friend).pipe(
+          switchMap(() => this.userService.addFriends(friend, currentUser)),
+          finalize(() => {
+            this.statusMessage = 'Lectura de QR exitosa';
+            this.finishProcessCode(this.statusMessage);
+          }),
+        );
+      } else {
+        if (this.statusMessage == null) {
+          this.statusMessage =
+            'Error al leer el QR. Verifica su validez y vuelve a intentarlo';
+        }
+        this.finishProcessCode(this.statusMessage);
       }
       return of(friend);
     }),
   );
 
-  async processCode(friendEmail: string): Promise<void> {
-    this.subject$.next(friendEmail);
+  processCode(code: string): void {
+    this.subject$.next(code);
   }
 
   validateFriend(friend: AppUser): boolean {
     if (!friend) {
-      this.errorMessage = 'El usuario no existe';
+      this.statusMessage = 'El usuario no existe';
       return false;
     }
 
     if (this.currentUser()?.email === friend.email) {
-      this.errorMessage = 'No se puede agregar a sí mismo como amigo';
+      this.statusMessage = 'No se puede agregar a sí mismo como amigo';
       return false;
     }
 
     if (friend.friends?.includes(this.currentUser()?.email!)) {
-      this.errorMessage = 'Ya es amigo';
+      this.statusMessage = 'Ya es amigo';
       return false;
     }
-
     return true;
   }
 
   closeScanner(): void {
     this.dialogRef.close();
+  }
+
+  finishProcessCode(message: string) {
+    this.closeScanner();
+    if (message) {
+      this.snackBar.open(message, 'Aceptar', {
+        duration: 3000,
+      });
+    }
   }
 }
