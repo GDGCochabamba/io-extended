@@ -34,7 +34,7 @@ import { ScannerComponent } from '../../scanner/scanner.component';
     <mat-sidenav-container class="layout">
       <mat-sidenav-content>
         <mat-toolbar color="primary">
-          <span> I/O Extended Cochabamba </span>
+          <span> DevFest Cochabamba </span>
 
           <button
             *ngIf="user()"
