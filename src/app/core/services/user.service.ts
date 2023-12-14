@@ -41,10 +41,11 @@ export class UserService {
   }
 
   addFriends(user: AppUser, friendUser: AppUser): Observable<void> {
+    const pointsPerQRRead = 20;
     const friends = user?.friends || [];
     const newFriends = [...new Set([...friends, friendUser.email!])];
     const points = user?.score || 0;
-    const newPoints = points + 20;
+    const newPoints = points + pointsPerQRRead;
 
     const docRef = doc(this.db, 'users', user.email!);
     return from(
