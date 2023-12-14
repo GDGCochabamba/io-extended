@@ -11,12 +11,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
       title="Cronograma DevFest 2023"
       referrerpolicy="no-referrer"
       width="100%"
-      class="pdf-viewer"
+      class="schedule__pdf-viewer"
     ></iframe>
   `,
   styles: [
     `
-      .pdf-viewer {
+      .schedule__pdf-viewer {
         height: 83vh;
       }
     `,
