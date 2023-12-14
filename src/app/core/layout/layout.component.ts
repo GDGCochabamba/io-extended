@@ -36,13 +36,14 @@ import { ScannerComponent } from '../../scanner/scanner.component';
         <mat-toolbar color="primary">
           <span> I/O Extended Cochabamba </span>
 
-          <a
+          <button
+            *ngIf="user()"
             mat-icon-button
             class="layout__profile-button"
-            routerLink="/profile"
+            (click)="openScanner()"
           >
-            <mat-icon> account_circle </mat-icon>
-          </a>
+            <mat-icon>qr_code_scanner</mat-icon>
+          </button>
         </mat-toolbar>
 
         <nav mat-tab-nav-bar backgroundColor="primary" [tabPanel]="tabPanel">
@@ -66,16 +67,6 @@ import { ScannerComponent } from '../../scanner/scanner.component';
             <ng-content></ng-content>
           </div>
         </mat-tab-nav-panel>
-
-        <button
-          *ngIf="user()"
-          mat-fab
-          class="layout__scanner-button"
-          color="primary"
-          (click)="openScanner()"
-        >
-          <mat-icon>qr_code_scanner</mat-icon>
-        </button>
       </mat-sidenav-content>
     </mat-sidenav-container>
   `,
@@ -92,13 +83,6 @@ import { ScannerComponent } from '../../scanner/scanner.component';
 
         .layout__profile-button {
           margin-left: auto;
-        }
-
-        .layout__scanner-button {
-          bottom: 15px;
-          position: fixed;
-          right: 15px;
-          z-index: 1;
         }
       }
     `,
