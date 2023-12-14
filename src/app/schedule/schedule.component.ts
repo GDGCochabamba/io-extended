@@ -6,57 +6,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
   standalone: true,
   imports: [MatExpansionModule],
   template: `
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Title </mat-panel-title>
-          <mat-panel-description>
-            This is a summary of the content
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>This is the primary content of the panel.</p>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Title </mat-panel-title>
-          <mat-panel-description>
-            This is a summary of the content
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>This is the primary content of the panel.</p>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Title </mat-panel-title>
-          <mat-panel-description>
-            This is a summary of the content
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>This is the primary content of the panel.</p>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Title </mat-panel-title>
-          <mat-panel-description>
-            This is a summary of the content
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>This is the primary content of the panel.</p>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Title </mat-panel-title>
-          <mat-panel-description>
-            This is a summary of the content
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-        <p>This is the primary content of the panel.</p>
-      </mat-expansion-panel>
-    </mat-accordion>
+    <iframe
+      src="https://drive.google.com/file/d/16_HsxhjMKXkJ8U2o1sUGiWQidTdimgod/preview"
+      title="Cronograma DevFest 2023"
+      referrerpolicy="no-referrer"
+      width="100%"
+      style="height: 83vh"
+    ></iframe>
   `,
 })
 export default class ScheduleComponent {}
