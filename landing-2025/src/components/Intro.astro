@@ -1,0 +1,46 @@
+---
+import type { EventInfo, Session } from "../lib/event";
+
+interface Props {
+  event: EventInfo;
+  sessions: Session[];
+}
+const { event, sessions } = Astro.props;
+
+const talks = sessions.filter((s) => s.type === "talk" && s.speakers.length > 0).length;
+const workshops = sessions.filter((s) => s.type === "workshop").length;
+const facts = [
+  ...(event.attendeeCount ? [{ value: event.attendeeCount, label: "asistentes" }] : []),
+  { value: talks, label: "charlas" },
+  { value: workshops, label: "talleres" },
+];
+const motto = (event.tagline || "Aprende. Conecta. Crea.")
+  .split(/(?<=\.)\s+/)
+  .filter(Boolean);
+---
+
+<section class="border-line border-y bg-white px-6 py-16 md:py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1.3fr] md:gap-16">
+    <h2 class="text-5xl leading-[1.05] font-bold md:text-6xl">
+      {motto.map((line) => <span class="block">{line}</span>)}
+    </h2>
+    <div>
+      <p class="text-muted text-lg leading-relaxed md:text-xl">
+        {event.description}
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-6">
+        {
+          facts.map((fact) => (
+            <div>
+              <dt class="sr-only">{fact.label}</dt>
+              <dd>
+                <span class="block text-4xl font-bold">{fact.value}</span>
+                <span class="text-muted">{fact.label}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

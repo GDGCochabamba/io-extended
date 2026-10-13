@@ -1,0 +1,57 @@
+---
+import { Image } from "astro:assets";
+import ucatec from "../assets/io25/ucatec.png";
+import cloud from "../assets/io25/cloud.png";
+import type { Venue } from "../lib/event";
+
+interface Props {
+  venue: Venue;
+  upcoming: boolean;
+}
+const { venue, upcoming } = Astro.props;
+const address = [venue.address, venue.city].filter(Boolean).join(", ");
+---
+
+<section id="sede" class="scroll-mt-16 px-6 py-16 md:py-24">
+  <div
+    class="border-line relative mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] border p-8 md:grid-cols-[1fr_auto] md:p-14"
+  >
+    <Image
+      src={cloud}
+      alt=""
+      aria-hidden="true"
+      width={200}
+      densities={[1, 2]}
+      class="pointer-events-none absolute -top-8 -right-8 hidden w-[200px] md:block"
+    />
+    <div class="relative">
+      <h2 class="io-heading-gradient pb-1 text-4xl leading-tight font-bold md:text-5xl">
+        {upcoming ? "¿Cómo llegar al evento?" : "Sede del evento"}
+      </h2>
+      <p class="mt-6 text-2xl font-medium">{venue.name}</p>
+      {address && <p class="text-muted mt-1 text-lg">{address}</p>}
+      {
+        venue.mapUrl && (
+          <a
+            href={venue.mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="io-pill io-pill-green focus-visible:outline-io-blue mt-8 h-12 px-7 focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            Abrir en Google Maps
+          </a>
+        )
+      }
+    </div>
+    <div class="relative md:self-end">
+      <p class="text-muted text-sm">Con el apoyo de</p>
+      <Image
+        src={ucatec}
+        alt="Universidad UCATEC"
+        width={220}
+        densities={[1, 2]}
+        class="mt-2 h-auto w-[220px]"
+      />
+    </div>
+  </div>
+</section>

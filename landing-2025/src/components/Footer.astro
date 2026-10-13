@@ -1,0 +1,41 @@
+---
+interface Props {
+  year: number;
+}
+const { year } = Astro.props;
+
+const links = [
+  { label: "gdg.com.bo", href: "https://gdg.com.bo" },
+  { label: "gdg.community.dev", href: "https://gdg.community.dev/gdg-cochabamba/" },
+  { label: "Instagram", href: "https://instagram.com/gdgcochabamba" },
+  { label: "Facebook", href: "https://www.facebook.com/GDGCochabamba" },
+];
+---
+
+<footer class="bg-ink px-6 py-12 text-white">
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between"
+  >
+    <p class="font-medium">Organizado por GDG Cochabamba</p>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="focus-visible:outline-io-blue rounded transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <p class="mx-auto mt-8 max-w-6xl text-xs text-white/60">
+    © {year} GDG Cochabamba. Google I/O Extended es un programa de Google
+    Developer Groups.
+  </p>
+</footer>

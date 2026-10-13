@@ -1,0 +1,144 @@
+---
+import { Image } from "astro:assets";
+import lockup from "../assets/io25/lockup-google-io-extended.png";
+import cluster from "../assets/io25/cluster.png";
+import android from "../assets/io25/android.png";
+import twentyFive from "../assets/io25/twenty-five.png";
+import { day, fullDate, month, time, year, type EventInfo } from "../lib/event";
+
+interface Props {
+  event: EventInfo;
+  cta?: { label: string; href: string };
+}
+const { event, cta } = Astro.props;
+
+const details = [
+  {
+    label: fullDate(event.startDate),
+    icon: "M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z",
+  },
+  {
+    label: `${time(event.startDate)} a ${time(event.endDate)}`,
+    icon: "M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z",
+  },
+  ...(event.venue
+    ? [
+        {
+          label: event.venue.name,
+          icon: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+        },
+      ]
+    : []),
+];
+---
+
+<section id="inicio" class="io-grid relative scroll-mt-16 overflow-hidden">
+  <Image
+    src={android}
+    alt=""
+    aria-hidden="true"
+    width={160}
+    densities={[1, 2]}
+    class="pointer-events-none absolute top-28 -left-12 hidden w-40 -rotate-6 xl:block"
+  />
+  <Image
+    src={twentyFive}
+    alt=""
+    aria-hidden="true"
+    width={150}
+    densities={[1, 2]}
+    class="pointer-events-none absolute -bottom-6 left-[44%] hidden w-[150px] rotate-6 lg:block"
+  />
+
+  <div
+    class="relative mx-auto grid max-w-6xl items-center gap-10 px-6 pt-14 pb-20 md:pt-20 lg:grid-cols-[1.15fr_1fr] lg:pb-28"
+  >
+    <div>
+      <Image
+        src={lockup}
+        alt="Google I/O Extended"
+        width={460}
+        densities={[1, 2]}
+        class="h-auto w-full max-w-[460px]"
+        loading="eager"
+      />
+      <p class="mt-1 text-2xl font-medium md:text-[1.75rem]">Cochabamba</p>
+
+      <h1 class="mt-10 md:mt-14" aria-label={`${fullDate(event.startDate)}`}>
+        <span
+          class="block text-[clamp(7rem,22vw,11.5rem)] leading-[0.8] font-bold tracking-tight"
+        >
+          {day(event.startDate)}
+        </span>
+        <span
+          class="mt-3 block text-[clamp(2.75rem,8vw,4.5rem)] leading-none font-medium"
+        >
+          {month(event.startDate)}
+          <span class="text-muted">{year(event.startDate)}</span>
+        </span>
+      </h1>
+
+      <ul class="mt-10 space-y-3 text-lg font-medium">
+        {
+          details.map((detail) => (
+            <li class="flex items-center gap-3">
+              <svg
+                viewBox="0 0 24 24"
+                class="text-io-blue size-6 shrink-0"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d={detail.icon} />
+              </svg>
+              {detail.label}
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-10 flex flex-wrap gap-4">
+        {
+          cta && (
+            <a
+              href={cta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="io-pill focus-visible:outline-io-blue h-14 w-full px-8 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-auto"
+            >
+              {cta.label}
+            </a>
+          )
+        }
+        <a
+          href="#cronograma"
+          class="border-ink hover:bg-ink focus-visible:outline-io-blue inline-flex h-14 w-full items-center justify-center rounded-full border-2 px-8 text-lg font-medium transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-auto"
+        >
+          Ver cronograma
+        </a>
+      </div>
+    </div>
+
+    <Image
+      src={cluster}
+      alt=""
+      aria-hidden="true"
+      width={540}
+      densities={[1, 2]}
+      loading="eager"
+      class="io-float pointer-events-none mx-auto w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[540px]"
+    />
+  </div>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .io-float {
+      animation: io-float 7s ease-in-out infinite;
+    }
+  }
+  @keyframes io-float {
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+</style>
