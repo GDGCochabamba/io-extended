@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+/* Google I/O 2025 Extended look, taken from the GDG Cochabamba posts
+   (Figma "GDG Events" → Google IO Extended 2025). */
+@theme {
+  --font-sans: 'Google Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Google Sans Code', ui-monospace, monospace;
+
+  --color-ink: #202124;
+  --color-muted: #5f6368;
+  --color-line: #e3e6ea;
+  --color-io-blue: #1f87fc;
+  --color-io-violet: #9972d5;
+  --color-io-red: #fe2b25;
+  --color-io-teal: #00afbe;
+  --color-io-green: #00ab4e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Isometric grid the posts are drawn on. */
+@utility io-grid {
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='36.95'%3E%3Cpath d='M0 0L64 36.95M0 36.95L64 0M0 0V36.95' stroke='%23e8eaed' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-size: 64px 36.95px;
+}
+
+@utility io-heading-gradient {
+  background-image: linear-gradient(90deg, #2b78ff, #cb71cd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient pills from the posts: blue → violet → red, and blue → teal → green. */
+@utility io-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: #fff;
+  font-weight: 500;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-io-blue) 0%,
+    var(--color-io-blue) 45%,
+    var(--color-io-violet) 75%,
+    var(--color-io-red) 100%
+  );
+  transition: filter 150ms ease;
+
+  &:hover {
+    filter: brightness(1.08) saturate(1.1);
+  }
+}
+
+@utility io-pill-green {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-io-blue) 0%,
+    var(--color-io-blue) 45%,
+    var(--color-io-teal) 75%,
+    var(--color-io-green) 100%
+  );
+}
