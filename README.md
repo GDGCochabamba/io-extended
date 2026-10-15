@@ -2,7 +2,7 @@
 
 This repository holds two independent projects:
 
-- **The 2023 gamification PWA** (this Angular app, at the repository root), deployed to the default Hosting site `io-extended-cocha.web.app`.
+- **The 2023 gamification PWA** (this Angular app, at the repository root). It is retired: the default Hosting site `io-extended-cocha.web.app` now only redirects (301) to io.gdg.com.bo, and the root `firebase.json` deploys that redirect, not the app. The source is kept for reference.
 - **[`landing-2025/`](landing-2025/)**: the Google I/O Extended Cochabamba 2025 landing (Astro), deployed to the `io-extended-cbba` Hosting site behind **io.gdg.com.bo**. See its README.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.

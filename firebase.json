@@ -1,15 +1,12 @@
 {
   "hosting": {
-    "public": "dist/io-extended",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
+    "site": "io-extended-cocha",
+    "public": "retired",
+    "redirects": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "https://io.gdg.com.bo",
+        "type": 301
       }
     ]
   }
