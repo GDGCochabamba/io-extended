@@ -17,7 +17,7 @@ npm run dev
 
 ## Deploy
 
-Hosting site `io-extended-cbba` in the Firebase project `io-extended-cocha`. The PWA stays on the project's default site, `io-extended-cocha.web.app`, and the repository's GitHub Actions only build and deploy the PWA.
+Hosting site `io-extended-cbba` in the Firebase project `io-extended-cocha`. The project's default site, `io-extended-cocha.web.app`, where the retired 2023 PWA lived, now redirects here.
 
 ```bash
 npm run build && firebase deploy --only hosting

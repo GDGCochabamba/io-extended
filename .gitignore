@@ -44,3 +44,6 @@ Thumbs.db
 
 # Keys
 src/environments/keys.ts
+
+# Firebase deploy cache
+.firebase/
