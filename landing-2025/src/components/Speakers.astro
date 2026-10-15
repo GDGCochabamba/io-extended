@@ -17,6 +17,15 @@ const SOCIAL_LABELS: Record<string, string> = {
   web: "Web",
 };
 
+// Firestore doesn't keep the order of map keys, so list the links in the order
+// of SOCIAL_LABELS (LinkedIn first) and unknown ones last.
+const rank = (type: string) => {
+  const i = Object.keys(SOCIAL_LABELS).indexOf(type);
+  return i === -1 ? Infinity : i;
+};
+const sortedSocials = (socials: Record<string, string>) =>
+  Object.entries(socials).sort(([a], [b]) => rank(a) - rank(b));
+
 const initials = (name: string) =>
   name
     .split(/\s+/)
@@ -60,7 +69,7 @@ const initials = (name: string) =>
               )}
               {Object.keys(speaker.socials).length > 0 && (
                 <ul class="mt-auto flex flex-wrap gap-2 pt-4 text-xs">
-                  {Object.entries(speaker.socials).map(([type, url]) => (
+                  {sortedSocials(speaker.socials).map(([type, url]) => (
                     <li>
                       <a
                         href={url}
